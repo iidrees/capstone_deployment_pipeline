@@ -15,8 +15,8 @@ pipeline {
          stage('Lint HTML') {
               steps {
                 //   sh 'tidy -q -e *.html'
-                //   sh 'docker version'
-                  sh 'kubectl version'
+                  sh 'docker version'
+                  sh 'kubectl version --client'
               }
          }
         //  stage('Security Scan') {
