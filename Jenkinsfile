@@ -28,8 +28,8 @@ pipeline {
         //  }         
          stage('Upload to AWS / Test the aws config') {
               steps {
-                  sh '/home/ubuntu/.local/bin/aws --version'
-                  sh 'aws --version'
+                  sh '/usr/bin/aws --version'
+                  sh '/usr/bin/aws --version'
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
