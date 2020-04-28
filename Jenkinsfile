@@ -17,7 +17,7 @@ pipeline {
                 //   sh 'tidy -q -e *.html'
                   sh 'docker version'
                   sh 'kubectl version --client'
-                  sh 'aws --version'
+                //   sh 'aws --version'
                   sh '/home/ubuntu/.local/bin/aws --version'
               }
          }
