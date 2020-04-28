@@ -28,7 +28,7 @@ pipeline {
               steps {
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
-                      s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
+                    //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
                   sh 'aws --version'
                   sh 'echo "This is the step after the versioning"'    
                   sh 'aws cloudformation --describe-stacks'
