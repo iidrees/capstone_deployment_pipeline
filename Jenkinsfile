@@ -32,6 +32,7 @@ pipeline {
                   sh '/usr/bin/aws --version'
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
+                  sh 'pwd'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
                 //   sh 'which aws'
                   sh '/usr/bin/aws --version'
