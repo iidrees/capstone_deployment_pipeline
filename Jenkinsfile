@@ -44,7 +44,7 @@ pipeline {
                       while [ $STATUS_PENDING ] 
                       do
                         CurrStatus=$(/usr/bin/aws cloudformation describe-stacks --query "Stacks[0].StackStatus" --no-paginate --output text)
-                        if [ $CurrStatus != "CREATE_IN_PROGRESS" ]; then
+                        if [ $CurrStatus == "CREATE_IN_PROGRESS" ]; then
                           echo "Still running Cloudformation templates"
                           continue
                         elif [ $CurrStatus == "CREATE_FAILED" ]; then
@@ -54,6 +54,7 @@ pipeline {
                         elif [ $CurrStatus == "CREATE_COMPLETE" ]; then
                           echo "Cloudformation template done"
                           STATUS_PENDING=false
+                          
                         fi
                       done
                       exit 0
