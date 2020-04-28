@@ -34,9 +34,9 @@ pipeline {
                   sh 'echo "Uploading content with AWS creds"'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
                 //   sh 'which aws'
-                  sh 'sudo /home/ubuntu/.local/bin/aws --version'
+                  sh '/usr/bin/aws --version'
                   sh 'echo "This is the step after the versioning"'    
-                  sh 'sudo /home/ubuntu/.local/bin/aws cloudformation --describe-stacks'
+                  sh '/usr/bin/aws cloudformation --describe-stacks'
                   }
               }
          }
