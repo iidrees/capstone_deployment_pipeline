@@ -29,10 +29,10 @@ pipeline {
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
-                  sh 'which aws'
-                  sh 'aws --version'
+                //   sh 'which aws'
+                  sh '/home/ubuntu/.local/bin/aws --version'
                   sh 'echo "This is the step after the versioning"'    
-                  sh 'aws cloudformation --describe-stacks'
+                  sh '/home/ubuntu/.local/bin/aws cloudformation --describe-stacks'
                   }
               }
          }
