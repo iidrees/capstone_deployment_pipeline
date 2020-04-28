@@ -37,6 +37,28 @@ pipeline {
                   sh '/usr/bin/aws --version'
                   sh 'echo "This is the step after the versioning"'    
                   sh '/usr/bin/aws cloudformation describe-stacks'
+                  sh'''
+                      echo "Conditional statement"
+                      STATUS_PENDING=true
+                      
+                      while [ $STATUS_PENDING ] 
+                      do
+                        CurrStatus=$(/usr/bin/aws cloudformation describe-stacks --query "Stacks[0].StackStatus" --no-paginate --output text)
+                        if [ $CurrStatus != "CREATE_IN_PROGRESS" ]; then
+                          echo "Still running Cloudformation templates"
+                          continue
+                        elif [ $CurrStatus == "CREATE_FAILED" ]; then
+                          echo "Cloudformation stack creation failed"
+                          STATUS=false
+                          exit 1
+                        elif [ $CurrStatus == "CREATE_COMPLETE" ]; then
+                          echo "Cloudformation template done"
+                          STATUS_PENDING=false
+                        fi
+                      done
+                      exit 0
+
+                  '''
                   }
               }
          }
