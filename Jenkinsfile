@@ -36,7 +36,7 @@ pipeline {
                 //   sh 'which aws'
                   sh '/usr/bin/aws --version'
                   sh 'echo "This is the step after the versioning"'    
-                  sh '/usr/bin/aws cloudformation --describe-stacks'
+                  sh '/usr/bin/aws cloudformation describe-stacks'
                   }
               }
          }
