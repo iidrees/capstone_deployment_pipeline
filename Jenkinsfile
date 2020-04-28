@@ -41,17 +41,17 @@ pipeline {
                       echo "Conditional statement"
                       STATUS_PENDING=true
                       
-                      while [ $STATUS_PENDING ] 
+                      while [ "$STATUS_PENDING" == "true" ] 
                       do
                         CurrStatus=$(/usr/bin/aws cloudformation describe-stacks --query "Stacks[0].StackStatus" --no-paginate --output text)
-                        if [ $CurrStatus == "CREATE_IN_PROGRESS" ]; then
+                        if [ "$CurrStatus" == "CREATE_IN_PROGRESS" ]; then
                           echo "Still running Cloudformation templates"
                           continue
-                        elif [ $CurrStatus == "CREATE_FAILED" ]; then
+                        elif [ "$CurrStatus" == "CREATE_FAILED" ]; then
                           echo "Cloudformation stack creation failed"
                           STATUS=false
                           exit 1
-                        elif [ $CurrStatus == "CREATE_COMPLETE" ]; then
+                        elif [ "$CurrStatus" == "CREATE_COMPLETE" ]; then
                           echo "Cloudformation template done"
                           STATUS_PENDING=false
                           
