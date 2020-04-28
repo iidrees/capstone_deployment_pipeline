@@ -17,7 +17,7 @@ pipeline {
                 //   sh 'tidy -q -e *.html'
                   sh 'docker version'
                   sh 'kubectl version --client'
-                //   sh 'python3 -m awscli --version'
+                  sh '/usr/bin/aws cloudformation describe-stacks'
                 //   sh '/home/ubuntu/.local/bin/aws --version'
               }
          }
