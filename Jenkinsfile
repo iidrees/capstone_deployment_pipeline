@@ -71,7 +71,7 @@ pipeline {
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
                   sh 'pwd'
-                  sh '/usr/bin/aws cloudformation create-stack --stack-name k8s-cluster --template-body file://cloudformation/vpc.yaml  --parameters file://cloudformation/parameters.json --on-failure DELETE &'
+                  sh '/usr/bin/aws cloudformation create-stack --stack-name k8s-cluster --template-body file://cloudformation/cluster.yaml  --on-failure DELETE &'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
                 //   sh 'which aws'
                   sh '/usr/bin/aws --version'
