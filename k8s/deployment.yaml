@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 # namespace: default
 metadata:
-  name: bear-bank-deployment-${TARGET_ROLE}
+  name: bear-bank-deployment
   namespace: default
   labels:
     app: bear-bank
@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: bear-bank
-        role: ${TARGET_ROLE}
+        role: rolling-update
     spec:
       containers:
       - name: bear-bank
@@ -29,3 +29,7 @@ spec:
             requests:
               cpu: 250m
               memory: 256Mi
+  strategy:
+    type: RollingUpdate
+    rollingUp      maxSurge: 50%
+

@@ -5,11 +5,11 @@ metadata:
   namespace: default
   labels:
     app: bear-bank
-    role: ${TARGET_ROLE}
+    role: rolling-update
 spec:
   selector:
     app: bear-bank
-    role: ${TARGET_ROLE}
+    role: rolling-update
   type: LoadBalancer
   ports:
    - protocol: TCP

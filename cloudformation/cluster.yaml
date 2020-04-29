@@ -37,9 +37,9 @@ Resources:
           - Fn::ImportValue:
               Fn::Sub: k8s-jenkins-vpc-sg 
       ScalingConfig:
-        MinSize: 2
-        DesiredSize: 2
-        MaxSize: 2
+        MinSize: 3
+        DesiredSize: 3
+        MaxSize: 7
       Labels:
         Name: test-nodes
       Subnets:
@@ -49,6 +49,8 @@ Resources:
               Fn::Sub: k8s-jenkins-vpc-Subnet-B
         - Fn::ImportValue:
               Fn::Sub: k8s-jenkins-vpc-Subnet-C
+      Tags:
+        Name: ${AWS::StackName}-nodes
     DependsOn: myCluster
 
 
