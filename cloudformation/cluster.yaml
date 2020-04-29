@@ -50,7 +50,7 @@ Resources:
         - Fn::ImportValue:
               Fn::Sub: k8s-jenkins-vpc-Subnet-C
       Tags:
-        Name: ${AWS::StackName}-nodes
+        Name: !Sub ${AWS::StackName}-nodes
     DependsOn: myCluster
 
 
