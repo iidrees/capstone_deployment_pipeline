@@ -31,5 +31,6 @@ spec:
               memory: 256Mi
   strategy:
     type: RollingUpdate
-    maxSurge: 50%
+    rollingUpdate:
+      maxSurge: 50%
 
