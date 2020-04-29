@@ -1,0 +1,62 @@
+Resources:
+  myCluster:
+    Type: 'AWS::EKS::Cluster'
+    Properties:
+      Name: prod-test
+      Version: '1.14'
+      RoleArn: >- 
+        arn:aws:iam::069825059323:role/eks_cluster_role 
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-sg
+        SubnetIds:
+          - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-A
+          - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-B
+          - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-C
+
+
+
+  EKSNodegroup:
+    Type: 'AWS::EKS::Nodegroup'
+    Properties:
+      ClusterName: prod-test
+      AmiType: AL2_x86_64
+      InstanceTypes: 
+        - t3.medium
+      DiskSize: 20
+      NodeRole: 'arn:aws:iam::069825059323:role/NodeInstanceRole'
+      NodegroupName: 'k8s-nodegrp'
+      Version: '1.14'
+      RemoteAccess: 
+        Ec2SshKey: 'pipeline'
+        SourceSecurityGroups:
+          - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-sg 
+      ScalingConfig:
+        MinSize: 2
+        DesiredSize: 2
+        MaxSize: 2
+      Labels:
+        Name: test-nodes
+      Subnets:
+        - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-A
+        - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-B
+        - Fn::ImportValue:
+              Fn::Sub: k8s-vpc-Subnet-C
+    DependsOn: myCluster
+
+
+
+Outputs:
+
+  SubnetIds:
+    Description: All subnets in the VPC
+    Value: 
+      Fn::ImportValue: 
+        Fn::Sub: k8s-vpc-All-Subnet
