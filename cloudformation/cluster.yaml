@@ -9,14 +9,14 @@ Resources:
       ResourcesVpcConfig:
         SecurityGroupIds:
           - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-sg
+              Fn::Sub: k8s-jenkins-vpc-sg
         SubnetIds:
           - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-A
+              Fn::Sub: k8s-jenkins-vpc-Subnet-A
           - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-B
+              Fn::Sub: k8s-jenkins-vpc-Subnet-B
           - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-C
+              Fn::Sub: k8s-jenkins-vpc-Subnet-C
 
 
 
@@ -35,7 +35,7 @@ Resources:
         Ec2SshKey: 'pipeline'
         SourceSecurityGroups:
           - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-sg 
+              Fn::Sub: k8s-jenkins-vpc-sg 
       ScalingConfig:
         MinSize: 2
         DesiredSize: 2
@@ -44,11 +44,11 @@ Resources:
         Name: test-nodes
       Subnets:
         - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-A
+              Fn::Sub: k8s-jenkins-vpc-Subnet-A
         - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-B
+              Fn::Sub: k8s-jenkins-vpc-Subnet-B
         - Fn::ImportValue:
-              Fn::Sub: k8s-vpc-Subnet-C
+              Fn::Sub: k8s-jenkins-vpc-Subnet-C
     DependsOn: myCluster
 
 
@@ -59,4 +59,4 @@ Outputs:
     Description: All subnets in the VPC
     Value: 
       Fn::ImportValue: 
-        Fn::Sub: k8s-vpc-All-Subnet
+        Fn::Sub: k8s-jenkins-vpc-All-Subnet
