@@ -115,7 +115,7 @@ pipeline {
                   sh '/usr/bin/aws --version'
                   sh '''
                       echo "Connect to cluster"
-                      /usr/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test
+                      /usr/local/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test
                   '''
                 //   sh '/usr/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test'
                   sh'''
@@ -153,7 +153,7 @@ pipeline {
                   sh '/usr/bin/aws --version'
                   sh '''
                       echo "Connect to cluster"
-                      /usr/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test
+                      /usr/local/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test
                   '''
                 //   sh '/usr/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test'
                   sh'''
