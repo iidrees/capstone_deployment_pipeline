@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bear-bank
+  namespace: default
+  labels:
+    app: bear-bank
+    role: ${TARGET_ROLE}
+spec:
+  selector:
+    app: bear-bank
+    role: ${TARGET_ROLE}
+  type: LoadBalancer
+  ports:
+   - protocol: TCP
+     port: 80
+     targetPort: 5000
