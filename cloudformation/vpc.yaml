@@ -1,0 +1,183 @@
+Description: >
+  This template Deploy a High-Availability Web App using CloudFormation.
+  This stack has a VPC, Public & Private Subnets, launch cofiguration, 
+  loadbalancer, IAM roles & Policies.
+
+# The parameters used in this template
+Parameters:
+  VpcCidr:
+    Description: The Cidr block for your VPC
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetACidr:
+    Description: The Cidr block for the Public Subnet A in your first AZ in your region
+    Type: String
+    Default: 10.0.4.0/24
+  PublicSubnetBCidr:
+    Description: The Cidr block for the Public Subnet B in your first AZ in your region
+    Type: String
+    Default: 10.0.5.0/24
+  PublicSubnetCCidr:
+    Description: The Cidr block for the Public Subnet C in your first AZ in your region
+    Type: String
+    Default: 10.0.6.0/24
+
+
+
+Resources:
+
+  # My general VPC network configurations are contained here.
+  # Directly below here is the VPC
+  MyVPC:
+    Type: "AWS::EC2::VPC"
+    Properties: 
+      CidrBlock: !Ref VpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: !Sub '${AWS::StackName}-VPC'
+
+  MyVPCInternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties: 
+      Tags:
+        - Key: Name
+          Value: VPC-Internet-Gateway
+  MyInternetGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      InternetGatewayId: !Ref MyVPCInternetGateway
+      VpcId: !Ref MyVPC
+  # Here we have the subnets for both the instances in the Private Subnets
+  # and the loadBalancer in the Public Subnets
+  PublicSubnetRegionA: 
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AvailabilityZone: 
+        !Join 
+          - ""
+          - - !Ref "AWS::Region"
+            - "a"
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PublicSubnetACidr
+      MapPublicIpOnLaunch: True
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}-Subnet-A"
+      - Key: kubernetes.io/cluster/prod-test
+        Value: shared
+      - Key: kubernetes.io/cluster/prod-tester
+        Value: shared
+  PublicSubnetRegionB: 
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AvailabilityZone: 
+        !Join 
+          - ""
+          - - !Ref "AWS::Region"
+            - "b"
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PublicSubnetBCidr
+      MapPublicIpOnLaunch: True
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}-Subnet-B"
+      - Key: kubernetes.io/cluster/prod-test
+        Value: shared
+      - Key: kubernetes.io/cluster/prod-tester
+        Value: shared
+  PublicSubnetRegionC: 
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AvailabilityZone: 
+        !Join 
+          - ""
+          - - !Ref "AWS::Region"
+            - "c"
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PublicSubnetCCidr
+      MapPublicIpOnLaunch: True
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}-Subnet-C"
+      - Key: kubernetes.io/cluster/prod-test
+        Value: shared
+      - Key: kubernetes.io/cluster/prod-tester
+        Value: shared
+
+  # Route Table
+  PublicRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties: 
+      VpcId: !Ref  MyVPC
+  PublicRoute:
+    Type: "AWS::EC2::Route"
+    Properties: 
+      RouteTableId: !Ref PublicRouteTable
+      GatewayId: !Ref MyVPCInternetGateway
+      DestinationCidrBlock: 0.0.0.0/0
+  
+  # Route Table Association
+  PublicSubnetOneRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnetRegionA
+  PublicSubnetTwoRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnetRegionB
+  PublicSubnetThreeRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnetRegionC
+  
+  # Directly below we have the security group configuration for the Control Plane
+  ControlPlaneSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Cluster communication with worker nodes
+      VpcId: !Ref MyVPC
+
+
+# Outputs
+
+Outputs:
+
+  SubnetIds:
+    Description: All subnets in the VPC
+    Value: !Join [ ",", [ !Ref PublicSubnetRegionA, !Ref PublicSubnetRegionB, !Ref PublicSubnetRegionC ] ]
+    Export: 
+      Name: !Sub "${AWS::StackName}-All-Subnet"
+  
+  Subnet01:
+    Description: Public subnet in Region a
+    Value: !Ref PublicSubnetRegionA
+    Export: 
+      Name: !Sub "${AWS::StackName}-Subnet-A"
+  Subnet02:
+    Description: Public subnet in Region a
+    Value: !Ref PublicSubnetRegionB
+    Export: 
+      Name: !Sub "${AWS::StackName}-Subnet-B"
+  Subnet03:
+    Description: Public subnet in Region a
+    Value: !Ref PublicSubnetRegionC
+    Export: 
+      Name: !Sub "${AWS::StackName}-Subnet-C"
+
+  SecurityGroups:
+    Description: Security group for the cluster control plane communication with worker nodes
+    Value: !Join [ ",", [ !Ref ControlPlaneSecurityGroup ] ]
+    Export: 
+      Name: !Sub "${AWS::StackName}-sg"
+
+  VpcId:
+    Description: The VPC Id
+    Value: !Ref MyVPC
+
+      
+      

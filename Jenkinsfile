@@ -26,13 +26,14 @@ pipeline {
         //          aquaMicroscanner imageName: 'alpine:latest', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
         //       }
         //  }         
-         stage('Upload to AWS / Test the aws config') {
+         stage('Cloudformation: VPC Stack') {
               steps {
                   sh '/usr/bin/aws --version'
                   sh '/usr/bin/aws --version'
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
                   sh 'pwd'
+                  sh '/usr/bin/aws cloudformation create-stack --stack-name k8s-jenkins-vpc --template-body file://cloudformation/vpc.yaml  --parameters file://cloudformation/parameters.json --on-failure DELETE &'
                     //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
                 //   sh 'which aws'
                   sh '/usr/bin/aws --version'
@@ -44,7 +45,7 @@ pipeline {
                       
                       while [ "$STATUS_PENDING" = "true" ] 
                       do
-                        CurrStatus=$(/usr/bin/aws cloudformation describe-stacks --query "Stacks[0].StackStatus" --no-paginate --output text)
+                        CurrStatus=$(/usr/bin/aws cloudformation describe-stacks --stack-name k8s-jenkins-vpc --query "Stacks[0].StackStatus" --no-paginate --output text)
                         if [ "$CurrStatus" = "CREATE_IN_PROGRESS" ]; then
                           echo "Still running Cloudformation templates"
                           continue
@@ -59,7 +60,6 @@ pipeline {
                         fi
                       done
                       exit 0
-
                   '''
                   }
               }
