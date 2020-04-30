@@ -6,7 +6,6 @@ pipeline {
                  sh '''
 
                      kubectl version --client
-                     kubectl version 
 
                      docker version
 
