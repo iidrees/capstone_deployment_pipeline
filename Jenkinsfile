@@ -1,36 +1,57 @@
 pipeline {
      agent any
      stages {
-         stage('Build') {
+         stage('Check CLI Dependencies & Tools') {
              steps {
-                 sh 'echo "Hello World"'
                  sh '''
-                     echo "Multiline shell steps works too"
-                     ls -lah
-                     echo "Install Tidy linting package in the instance"
+
+                     kubectl version --client
+                     kubectl version 
+
+                     docker version
+
+                     /usr/local/bin/aws --version
                      
                  '''
              }
          }
          stage('Lint Dockerfile') {
               steps {
-                //   sh 'tidy -q -e *.html'
                   sh 'docker version'
                   sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
-                  sh 'kubectl version --client'
-                //   sh '/usr/local/bin/aws cloudformation describe-stacks'
-                //   sh '/home/ubuntu/.local/bin/aws --version'
               }
          }
-        //  stage('Security Scan') {
-        //       steps { 
-        //          aquaMicroscanner imageName: 'alpine:latest', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
-        //       }
-        //  }         
+         stage('Docker: Build Docker & Push to ECR') {
+              steps {
+                  withAWS(region:'eu-west-1',credentials:'aws-creds') {
+                  sh 'echo "Uploading content with AWS creds"'
+                  sh 'pwd'
+                  sh '/usr/local/bin/aws cloudformation create-stack --stack-name k8s-jenkins-vpc --template-body file://cloudformation/vpc.yaml  --parameters file://cloudformation/parameters.json --on-failure DELETE &'
+                    //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
+                //   sh 'which aws'
+                  sh '/usr/local/bin/aws --version'
+                  sh 'echo "This is the step after the versioning"'    
+                //   sh '/usr/local/bin/aws cloudformation describe-stacks'
+                  sh'''
+                      
+                      echo "Authenticate with Amazon ECR"
+                      /usr/local/bin/aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 069825059323.dkr.ecr.eu-west-1.amazonaws.com/udacity-capstone
+
+                      echo "Build docker image"
+                      docker build -t udacity-capstone .
+
+                      echo "Tag the Image built"
+                      docker tag udacity-capstone:latest 069825059323.dkr.ecr.eu-west-1.amazonaws.com/udacity-capstone:latest
+
+                      echo "Push Image to ECR"
+                      docker push 069825059323.dkr.ecr.eu-west-1.amazonaws.com/udacity-capstone:latest
+
+                  '''
+                  }
+              }
+         }
          stage('Cloudformation: VPC Stack') {
               steps {
-                  sh '/usr/local/bin/aws --version'
-                  sh '/usr/local/bin/aws --version'
                   withAWS(region:'eu-west-1',credentials:'aws-creds') {
                   sh 'echo "Uploading content with AWS creds"'
                   sh 'pwd'
