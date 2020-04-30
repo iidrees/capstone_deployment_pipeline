@@ -25,4 +25,4 @@ RUN  yarn global add serve
 EXPOSE 5000
 
 # command that starts the app
-ENTRYPOINT [ "serve", "-s", "build" ]s
+ENTRYPOINT [ "serve", "-s", "build" ]
