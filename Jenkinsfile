@@ -12,10 +12,11 @@ pipeline {
                  '''
              }
          }
-         stage('Lint HTML') {
+         stage('Lint Dockerfile and Cloudformation Templates') {
               steps {
                 //   sh 'tidy -q -e *.html'
                   sh 'docker version'
+                  sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
                   sh 'kubectl version --client'
                 //   sh '/usr/local/bin/aws cloudformation describe-stacks'
                 //   sh '/home/ubuntu/.local/bin/aws --version'
@@ -131,36 +132,5 @@ pipeline {
                   }
               }
          }
-        //  stage('K8S-Production: Deploy Green Env  ') {
-        //       steps {
-        //         //   sh '/usr/local/bin/aws --version'
-        //         //   sh '/usr/local/bin/aws --version'
-        //           withAWS(region:'eu-west-1',credentials:'aws-creds') {
-        //           sh 'echo "Uploading content with AWS creds"'
-        //           sh 'pwd'
-        //         //   sh '/usr/local/bin/aws cloudformation create-stack --stack-name k8s-cluster --template-body file://cloudformation/cluster.yaml  --on-failure DELETE &'
-        //             //   s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'udacity-jenkins-cicd')
-        //         //   sh 'which aws'
-        //           sh '/usr/local/bin/aws --version'
-        //           sh '''
-        //               echo "Connect to cluster"
-        //               /usr/local/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test
-        //           '''
-        //         //   sh '/usr/local/bin/aws eks --region eu-west-1 update-kubeconfig --name prod-test'
-        //           sh'''
-        //               echo "Check version and then deploy to cluster"
-        //               export TARGET_ROLE=green
-
-        //               envsubst < ./k8s/deployment.yaml > deploy.yaml
-        //               envsubst < ./k8s/service.yaml > svc.yaml
-        //               kubectl apply -f deploy.yaml
-        //               kubectl apply -f svc.yaml
-
-        //               rm deploy.yaml
-        //               rm svc.yaml
-        //           '''
-        //           }
-        //       }
-        //  }
      }
 }
