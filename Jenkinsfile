@@ -12,7 +12,7 @@ pipeline {
                  '''
              }
          }
-         stage('Lint Dockerfile and Cloudformation Templates') {
+         stage('Lint Dockerfile') {
               steps {
                 //   sh 'tidy -q -e *.html'
                   sh 'docker version'
